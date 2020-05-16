@@ -2,3 +2,4 @@
 
 Still in need of doing:
 * CRUD for admin to alter products in database. 
+* Advanced Features
