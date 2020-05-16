@@ -41,10 +41,10 @@ class="w3-bar-item w3-button">Close</a>
 			Class.forName("com.mysql.jdbc.Driver");
 			String connURL = "jdbc:mysql://localhost/drinkshop?user=root&password=root&serverTimezone=UTC";
 			Connection conn = DriverManager.getConnection(connURL);
-			Statement stmt = conn.createStatement();
+			PreparedStatement stmt = conn.prepareStatement("SELECT id, username, email FROM users WHERE id=?;");
+			stmt.setString(1,qsID);
 			
-			String sqlStr = "SELECT id, username, email FROM users WHERE id='" + qsID + "';";
-			ResultSet rs = stmt.executeQuery(sqlStr);
+			ResultSet rs = stmt.executeQuery();
 		
 			if(rs.next()){
 				String username = rs.getString(2);

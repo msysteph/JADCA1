@@ -47,10 +47,11 @@ class="w3-bar-item w3-button">Close Menu</a>
 				Class.forName("com.mysql.jdbc.Driver");
 				String connURL = "jdbc:mysql://localhost/drinkshop?user=root&password=root&serverTimezone=UTC";
 				Connection conn = DriverManager.getConnection(connURL);
-				Statement stmt = conn.createStatement();
+				PreparedStatement stmt = conn.prepareStatement("SELECT id, name, description_short, image_location FROM menu WHERE product_category=?");
+				stmt.setString(1,qsCategory);  
 				
-				String sqlStr = "SELECT id, name, description_short, image_location FROM drinkshop.menu WHERE product_category='"+qsCategory + "';";
-				ResultSet rs = stmt.executeQuery(sqlStr);
+				
+				ResultSet rs = stmt.executeQuery();
 			
 				while(rs.next()){
 					String id = rs.getString(1);
