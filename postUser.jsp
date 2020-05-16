@@ -19,11 +19,14 @@
 		Class.forName("com.mysql.jdbc.Driver");
 		String connURL = "jdbc:mysql://localhost/drinkshop?user=root&password=root&serverTimezone=UTC";
 		Connection conn = DriverManager.getConnection(connURL);
-		Statement stmt = conn.createStatement();
+		PreparedStatement stmt = conn.prepareStatement("INSERT INTO users (username, password, role, email) VALUES(?,?,'member',?);");
+		stmt.setString(1,qsUsername);
+		stmt.setString(2, qsPassword);
+		stmt.setString(3,qsEmail);
+
+	
 		
-		String sqlStr = "INSERT INTO users (username, password, role, email) VALUES('"+ qsUsername + "','" + qsPassword + "','member','" + qsEmail + "');";
-		out.print(sqlStr);
-		int rs = stmt.executeUpdate(sqlStr);
+		int rs = stmt.executeUpdate();
 		conn.close();		
 	} catch (Exception e){out.println("Error: " + e);}
 	
