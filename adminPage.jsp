@@ -39,33 +39,79 @@ class="w3-bar-item w3-button">Close</a>
 <!--PAGE CONTENT -->
 <div class="w3-main w3-content w3-padding" style="max-width:1200px;margin-top:100px">
 	<div class="w3-row-padding w3-padding-16 w3-center">
+		<div style="margin-top: 20px;"><a href="addProduct.jsp"><button>Add Product</button></a></div>
 	
 		<%
+			if(request.getParameter("statusCode") != null) {
+				if(request.getParameter("statusCode").equals("deleteSuccess")) {
+		%>
+				<p>Product deleted</p>	
+		<%
+				} else if(request.getParameter("statusCode").equals("updateSuccess")) {
+		%>
+					<p>Product updated</p>	
+		<%
+				} else if(request.getParameter("statusCode").equals("addSuccess")) {
+		%>
+					<p>Product added</p>	
+		<%
+				}
+			}
+		
 			try{
 				Class.forName("com.mysql.jdbc.Driver");
 				String connURL = "jdbc:mysql://localhost/drinkshop?user=root&password=root&serverTimezone=UTC";
 				Connection conn = DriverManager.getConnection(connURL);
 				Statement stmt = conn.createStatement();
 				
-				String sqlStr = "SELECT id, name, description_short, product_category, image_location FROM menu;";
+				String sqlStr = "SELECT * FROM menu;";
 				ResultSet rs = stmt.executeQuery(sqlStr);
+				
+				int count = 0;
 			
 				while(rs.next()){
-					String id = rs.getString(1);
-					String name = rs.getString(2);
-					String description = rs.getString(3);
-					String category = rs.getString(4);
-					String imageURL = rs.getString(5);
+					String id = rs.getString(1), 
+						   name = rs.getString(2), 
+						   description_short = rs.getString(3), 
+						   description_long = rs.getString(4), 
+						   cost_price = rs.getString(5), 
+						   retail_price = rs.getString(6), 
+						   stock_quantity = rs.getString(7), 
+						   product_category = rs.getString(8), 
+						   image_location = rs.getString(9);
+					
+					if(count == 0) {
+						%>
+							<div class="w3-row-padding" style="margin-top: 15px;">
+						<%
+					}
 		%>
 		
 		
 	  <!--GRID-->
-		    <div class="w3-quarter">
-			      <img src="<%=imageURL%>" alt="drink" style="width:100%">
-			      <h3><%=name%></h3>			      
+	    	<div class="w3-quarter">
+			      <img src="<%=image_location%>" alt="drink" style="width:100%">
+			      <h3>Name:</h3><%=name%>
+			      <h3>Short description:</h3><%=description_short%>
+			      <h3>Long description:</h3><%=description_long%>
+			      <h3>Cost price:</h3><%=cost_price%>
+			      <h3>Retail price:</h3><%=retail_price%>
+			      <h3>Stock quantity:</h3><%=stock_quantity%>
+			      <h3>Product category:</h3><%=product_category%>
+			      <div id="updateDeleteProduct" style="margin-top: 8px;">
+  						<a href="updateProduct.jsp?id=<%=id%>"><button>Update</button></a>
+  						<a href="postProduct.jsp?id=<%=id%>&action=delete"><button>Delete</button></a>
+			      </div>		      
 		    </div>
 	  
 		<%
+					count++;
+					if(count == 4) {
+						%>
+							</div>
+						<%
+						count = 0;
+					}
 				}
 				conn.close();
 			} catch (Exception e){out.println("Error!" + e);}
