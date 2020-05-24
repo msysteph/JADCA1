@@ -22,6 +22,12 @@
 		response.sendRedirect("adminPage.jsp?statusCode=deleteSuccess");
 		
 	} else if(request.getParameter("action").equals("update")){
+		
+		String qsImageLocation = request.getParameter("image_location");
+		if(qsImageLocation.equals("") || qsImageLocation == null){
+			qsImageLocation = "https://i.imgur.com/tFSvK8Jg.png";
+		}
+		
 		try{
 			Class.forName("com.mysql.jdbc.Driver");
 			String connURL = "jdbc:mysql://localhost/drinkshop?user=root&password=root&serverTimezone=UTC";
@@ -34,7 +40,7 @@
 			stmt.setString(5, request.getParameter("retail_price"));
 			stmt.setString(6, request.getParameter("stock_quantity"));
 			stmt.setString(7, request.getParameter("product_category"));
-			stmt.setString(8, request.getParameter("image_location"));
+			stmt.setString(8, qsImageLocation);
 			stmt.setString(9, request.getParameter("id"));
 			out.println(stmt);
 			
@@ -48,7 +54,14 @@
 		
 		response.sendRedirect("adminPage.jsp?statusCode=updateSuccess");
 	} else if(request.getParameter("action").equals("add")) {
+		
+		String qsImageLocation = request.getParameter("image_location");
+		if(qsImageLocation.equals("") || qsImageLocation == null){
+			qsImageLocation = "https://i.imgur.com/tFSvK8Jg.png";
+		}
+		
 		try{
+			
 			Class.forName("com.mysql.jdbc.Driver");
 			String connURL = "jdbc:mysql://localhost/drinkshop?user=root&password=root&serverTimezone=UTC";
 			Connection conn = DriverManager.getConnection(connURL);
@@ -60,7 +73,7 @@
 			stmt.setString(5, request.getParameter("retail_price"));
 			stmt.setString(6, request.getParameter("stock_quantity"));
 			stmt.setString(7, request.getParameter("product_category"));
-			stmt.setString(8, request.getParameter("image_location"));
+			stmt.setString(8, qsImageLocation);
 			out.println(stmt);
 			
 			stmt.execute();
