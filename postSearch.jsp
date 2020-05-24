@@ -1,6 +1,10 @@
-	<!DOCTYPE html>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<%@page import ="java.sql.*"%>  
+
+<!DOCTYPE html>
 <html>
-<title>Blitz - About Us</title>
+<title>Blitz - Search</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
@@ -27,34 +31,59 @@ class="w3-bar-item w3-button">Close</a>
 <div class="w3-top">
   <div class="w3-white w3-xlarge" style="max-width:1200px;margin:auto">
   	<a href="index.html" style="text-decoration:none"><div class="w3-center w3-padding-16">Blitz</div></a>
-	<div class="w3-button w3-padding-16 w3-left" onclick="w3_open()">Search</div>
+	<div class="w3-button w3-padding-16 w3-left" onclick="w3_open()">Open</div>
+	<div class="w3-center w3-padding-16">Search Results</div>
   </div>
 </div>
   
 <!--PAGE CONTENT -->
 <div class="w3-main w3-content w3-padding" style="max-width:1200px;margin-top:100px">
- <div class="w3-container w3-padding-32 w3-center">  
-   <img src="https://static.dezeen.com/uploads/2014/10/Biju-Bubble-Tea-Rooms-by-Gundry-and-Ducker_dezeen_784_4.jpg" alt="Drink" class="w3-image" style="display:block;margin:auto" width="600" height="533">
-   <div class="w3-padding-32">
-     <h4>Artisan Drinks Made With Love</b></h4>
-     <p>
-	     At Blitz, we offer an array of delicious drinks made with the freshest of ingredients, from kombuchas to milkshakes. You won't find any another
-	     speciality drinks so affordable anywhere else. We currently have two franchises and strive to expand in the future. 
-	     We are also delivering all over Singapore. <b>Order online now! </b>
-     </p>
-     
-     <p>
-     	Franchises: </br>
-     	<small>
-	     #B1-23, Causeway Point - Woodlands 
-	     
-	     #B1-455, CompassOne Mall - Sengkang
-	     </small>
-     </p>
-   </div>
- </div>
-</div>
-
+	<div class="w3-row-padding w3-padding-16 w3-center">
+		<%
+			String qsSearch = request.getParameter("qsSearch");
+		
+			try{
+				Class.forName("com.mysql.jdbc.Driver");
+				String connURL = "jdbc:mysql://localhost/drinkshop?user=root&password=root&serverTimezone=UTC";
+				Connection conn = DriverManager.getConnection(connURL);
+				Statement stmt = conn.createStatement();
+				String sqlStr = "SELECT id, name, description_short, product_category, image_location FROM menu WHERE name LIKE '%" + qsSearch + "%';";
+				ResultSet rs = stmt.executeQuery(sqlStr);
+			
+				while(rs.next()){
+					String id = rs.getString(1);
+					String name = rs.getString(2);
+					String description = rs.getString(3);
+					String category = rs.getString(4);
+					String imageURL = rs.getString(5);
+		%>
+		
+		
+	  <!--GRID-->
+		    <div class="w3-quarter">
+		      <a href= "drinkListing.jsp?id=<%=id%>&name=<%=name%>" style= "text-decoration: none;">
+			      <img src="<%=imageURL%>" alt="drink" style="width:100%" class= "w3-bar-item w3-button">
+			   </a>    
+			
+   		      <a href= "categoryPage.jsp?category=<%=category%>" style= "text-decoration: none;">
+	          		<p><small><%=category%></small></p>
+	          </a>
+	          
+	          <a href= "drinkListing.jsp?id=<%=id%>&name=<%=name%>" style= "text-decoration: none;">
+			      <h3><%=name%></h3>
+			   </a> 
+			      
+		      <p><%=description%></p>
+		    </div>
+	  
+		<%
+				}
+				conn.close();
+			} catch (Exception e){out.println("Error!" + e);}
+		%>
+	  </div>
+  </div>
+  
 <script>
 // Script to open and close sidebar
 function w3_open() {
